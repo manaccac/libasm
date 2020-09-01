@@ -1,41 +1,26 @@
-SRCS		=	ft_strlen.s ft_strcmp.s ft_strcpy.s # ft_write.s ft_read.s ft_strdup.s
+NAME = libasm.a
+SRC = ft_strlen.s ft_strcpy.s ft_strcmp.s ft_write.s ft_read.s ft_strdup.s
+OBJ = $(SRC:.s=.o)
+CFLAGS = -Wall -Wextra -Werror
 
-OBJS		=	$(SRCS:.s=.o)
+all: $(NAME)
 
-NA			=	nasm
+$(NAME): $(OBJ)
+	ar rcs $(NAME) $(OBJ)
 
-NA_FLAGS	=	-f macho64
+%.o: %.s
+	nasm $< -f macho64 -o $@
 
-FLAGS 		=	-Wall -Werror -Wextra
-
-NAME		=	libasm.a
-
-TEST		=	test
-
-%.o:			%.s
-				$(NA) $(NA_FLAGS) $<
-
-all:			$(NAME)
-
-$(NAME):		$(OBJS)
-				ar rcs $(NAME) $(OBJS)
+test: $(NAME) main.c
+	gcc -no-pie $(CFLAGS) main.c $(NAME) -o test
 
 clean:
-				rm -rf $(OBJS)
+	rm -f $(OBJ)
 
-fclean:			clean
-				rm -rf $(NAME) $(TEST)
+fclean: clean
+	rm -f $(NAME)
+	rm -f test
 
-re:				fclean $(NAME)
+re: fclean all
 
-test:			$(NAME)
-				gcc $(FLAGS) -L. -lasm -o $(TEST) main.c
-				./$(TEST) < Makefile
-
-bonus:			$(OBJS)
-				ar rcs $(NAME) $(OBJS)
-
-test_bonus:		bonus
-				gcc $(FLAGS) -L. -lasm -o main_bonus.c
-
-.PHONY:			clean fclean re test bonus test_bonus
+.PHONY: all re clean fclean

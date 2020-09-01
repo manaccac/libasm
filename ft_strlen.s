@@ -2,7 +2,7 @@
 			global	_ft_strlen	;point de depart
 
 _ft_strlen:
-			xor		rax, rax		;i = 0
+			mov		rax, 0		;i = 0
 			jmp		comp			;saut inconditionnel à l’adresse donner
 
 comp:
